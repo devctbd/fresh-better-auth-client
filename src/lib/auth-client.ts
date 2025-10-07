@@ -5,3 +5,12 @@ export const authClient = createAuthClient({
 });
 
 export const { signOut } = authClient;
+
+export const signIn = async (provider: "google" | "github") => {
+  const data = await authClient.signIn.social({
+    provider,
+    callbackURL: "/dashboard",
+  });
+
+  return data;
+};

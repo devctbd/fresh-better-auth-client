@@ -21,6 +21,8 @@ import { useRouter } from "next/navigation";
 import { EyeOff, Eye } from "lucide-react";
 import { SignInUser } from "@/actions/users";
 import { useState } from "react";
+import { signIn } from "@/lib/auth-client";
+import { redirect } from "next/navigation";
 
 // Define the validation schema with Zod
 const loginSchema = z.object({
@@ -89,11 +91,19 @@ export function SignInForm() {
           </div>
 
           <div className="mt-6 grid grid-cols-2 gap-3">
-            <Button type="button" variant="outline">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => signIn("google")}
+            >
               <Icons.google />
               <span>Google</span>
             </Button>
-            <Button type="button" variant="outline">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => signIn("github")}
+            >
               <Icons.gitHub />
               <span>Github</span>
             </Button>

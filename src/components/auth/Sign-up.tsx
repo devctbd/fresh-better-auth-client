@@ -24,6 +24,7 @@ import { useRouter } from "next/navigation";
 
 import { ArrowLeft, LogOut, LucideProps } from "lucide-react";
 import { AppLogoIcon } from "../AppLogo";
+import { signIn } from "@/lib/auth-client";
 
 // Define schema for form validation with Zod
 const registerSchema = z
@@ -35,10 +36,18 @@ const registerSchema = z
       .min(8, "Password must be at least 8 characters")
       .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
       .regex(/[a-z]/, "Password must contain at least one lowercase letter")
-      .regex(/[0-9]/, "Password must contain at least one number"),
+      .regex(/[0-9]/, "Password must contain at least one number")
+      .regex(
+        /[@$!%*?&]/,
+        "Password must contain at least one special character"
+      ),
     confirmPassword: z
       .string()
-      .min(8, "Password must be at least 8 characters"),
+      .min(8, "Password must be at least 8 characters")
+      .regex(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+        "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
+      ),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
@@ -107,11 +116,19 @@ export function Register() {
           </div>
 
           <div className="mt-6 grid grid-cols-2 gap-3">
-            <Button type="button" variant="outline">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => signIn("google")}
+            >
               <Icons.google />
               <span>Google</span>
             </Button>
-            <Button type="button" variant="outline">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => signIn("github")}
+            >
               <Icons.gitHub />
               <span>Github</span>
             </Button>
