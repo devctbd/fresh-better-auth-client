@@ -1,7 +1,14 @@
+import Navbar from "@/components/NavItems/Navbar";
+
 export default function MainLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return <>{children}</>;
+  return (
+    <>
+      <Navbar />
+      {children}
+    </>
+  );
 }

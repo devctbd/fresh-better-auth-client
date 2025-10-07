@@ -2,8 +2,12 @@ import React from "react";
 import { Button } from "../ui/button";
 import Link from "next/link";
 import { DropdownAccount } from "./DropdownAccount";
-const Navbar = () => {
-  const login = false;
+import { getServerSession } from "@/lib/getServerSession";
+
+const Navbar = async () => {
+  const session = await getServerSession();
+  const user = session?.user;
+
   return (
     <header className="border-b py-5">
       <div className="container mx-auto">
@@ -14,8 +18,8 @@ const Navbar = () => {
             </Link>
           </div>
 
-          {login ? (
-            <DropdownAccount />
+          {user ? (
+            <DropdownAccount user={user} />
           ) : (
             <div className="flex items-center gap-2">
               <Button variant="outline" asChild>

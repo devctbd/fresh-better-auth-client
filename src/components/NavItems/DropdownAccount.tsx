@@ -17,20 +17,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import LogOutButton from "../auth/user-card";
 
-export const user = {
-  name: "John Doe",
-  email: "john.doe@example.com",
-  image: "https://github.com/shadcn.png",
-  role: "user",
-};
-
-export function DropdownAccount() {
+export function DropdownAccount({ user }: { user: any }) {
   return (
     <div>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Avatar className="h-8 w-8 rounded-lg grayscale">
+          <Avatar className="h-8 w-8 rounded-lg ">
             <AvatarImage
               src={user.image || "https://github.com/shadcn.png"}
               alt={user.name}
@@ -78,7 +72,7 @@ export function DropdownAccount() {
           <DropdownMenuSeparator />
           <DropdownMenuItem>
             <IconLogout />
-            Sign Out
+            <LogOutButton />
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

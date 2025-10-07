@@ -1,51 +1,112 @@
-import React from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
-const Dashboard = () => {
+import { getServerSession } from "@/lib/getServerSession";
+
+import { CalendarDaysIcon, MailIcon, ShieldIcon, UserIcon } from "lucide-react";
+import type { Metadata } from "next";
+import Link from "next/link";
+import { redirect } from "next/navigation";
+
+export const metadata: Metadata = {
+  title: "Dashboard",
+};
+
+export default async function DashboardPage() {
+  const session = await getServerSession();
+  const user = session?.user;
+
+  if (!user) redirect("/sign-in");
+
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold">Dashboard</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div className="bg-white p-4 rounded-lg shadow-md">
-          <h2 className="text-xl font-bold">User Information</h2>
-          <p className="text-gray-600">Name: John Doe</p>
-          <p className="text-gray-600">Email: johndoe@example.com</p>
+    <main className="mx-auto w-full max-w-6xl px-4 py-12">
+      <div className="space-y-6">
+        <div className="space-y-2">
+          <h1 className="text-2xl font-semibold">Dashboard</h1>
+          <p className="text-muted-foreground">
+            Welcome back! Here&apos;s your account overview.
+          </p>
         </div>
-        <div className="bg-white p-4 rounded-lg shadow-md">
-          <h2 className="text-xl font-bold">User Activity</h2>
-          <ul className="list-disc list-inside">
-            <li>Logged in on January 1, 2022</li>
-            <li>Logged in on January 2, 2022</li>
-            <li>Logged in on January 3, 2022</li>
-          </ul>
+        {!user.emailVerified && <EmailVerificationAlert />}
+        <ProfileInformation user={user} />
+      </div>
+    </main>
+  );
+}
+
+interface ProfileInformationProps {
+  user: any;
+}
+
+function ProfileInformation({ user }: ProfileInformationProps) {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <UserIcon className="size-5" />
+          Profile Information
+        </CardTitle>
+        <CardDescription>
+          Your account details and current status
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="flex flex-col gap-6 sm:flex-row sm:items-start">
+          <div className="flex flex-col items-center gap-3">
+            <Avatar>
+              <AvatarImage src={user.image} alt={user.name} />
+              <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+            </Avatar>
+            {user.role && (
+              <Badge>
+                <ShieldIcon className="size-3" />
+                {user.role}
+              </Badge>
+            )}
+          </div>
+
+          <div className="flex-1 space-y-4">
+            <div>
+              <h3 className="text-2xl font-semibold">{user.name}</h3>
+              <p className="text-muted-foreground">{user.email}</p>
+            </div>
+
+            <div className="space-y-2">
+              <div className="text-muted-foreground flex items-center gap-2 text-sm">
+                <CalendarDaysIcon className="size-4" />
+                Member Since
+              </div>
+              <p className="font-medium">{user.createdAt.toDateString()}</p>
+            </div>
+          </div>
         </div>
-        <div className="bg-white p-4 rounded-lg shadow-md">
-          <h2 className="text-xl font-bold">User Settings</h2>
-          <form>
-            <label className="block">
-              <span className="text-gray-700">Username</span>
-              <input
-                type="text"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-              />
-            </label>
-            <label className="block">
-              <span className="text-gray-700">Email</span>
-              <input
-                type="email"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-              />
-            </label>
-            <button
-              type="submit"
-              className="w-full flex justify-center bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            >
-              Save
-            </button>
-          </form>
+      </CardContent>
+    </Card>
+  );
+}
+
+function EmailVerificationAlert() {
+  return (
+    <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4 dark:border-yellow-800/50 dark:bg-yellow-950/30">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <MailIcon className="size-5 text-yellow-600 dark:text-yellow-400" />
+          <span className="text-yellow-800 dark:text-yellow-200">
+            Please verify your email address to access all features.
+          </span>
         </div>
+        <Button size="sm" asChild>
+          <Link href="/verify-email">Verify Email</Link>
+        </Button>
       </div>
     </div>
   );
-};
-
-export default Dashboard;
+}
